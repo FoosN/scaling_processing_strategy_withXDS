@@ -300,9 +300,12 @@ def FillinFolder(create, resultFile, listOfexperiment, listOfFile, xdsinp):
 
 #reals final progs:
 
-scheme0 = ["all", "-Prs0","-corr","-ano" ]
+scheme0 = ["all", "-Prs0","-corr","-ano"]
 scheme1 = ["all", "-Prs1", "-corr", "-noAno"] 
-
+scheme2 = ["-r", "-Prs0", "-corr-none", "-ano"]
+scheme3 = ["-r", "-Prs0", "-corr", "-ano"]
+scheme4 = ["-r", "Prs1", "-corr", "-ano"]
+ 
 listOfexperiment = [scheme0, scheme1]
 listOfFile = ["X-CORRECTIONS.cbf", "Y-CORRECTIONS.cbf", "GAIN.cbf", "BLANK.cbf", 
               "BKGINIT.cbf", "img"]             

@@ -145,7 +145,7 @@ def settings_XDS_prescal_factor(original_dict, settings):
         image2set = " ".join(map(str, str(original_dict["DATA_RANGE="]).split()[-2:]))
         data_scale = image2set[0:] + " " + "1"
         original_dict["pscale"] = " DATA_RANGE_FIXED_SCALE_FACTOR= "+ data_scale + "\n"  
-    # fonction to be implemented later : prepare input file wich contain x yy z where:
+    # function to be implemented later : prepare input file wich contain x yy z where:
     # x image start yy image end by "subset of images" and z scale correction factor 
     # for this batch (possibly it's only one image).which means for 1000 img, 1000 lines
     elif "-PrsP" in settings: #scale factor personalised with external file of params

@@ -125,10 +125,10 @@ def correction(xdsinp, settings):
 
 def resolutionMax(xdsinp):
     global resMax    
-    resMax = int(raw_input('set the resolution maxi, default is : the one used originaly in your input files'))
-    if resMax == "":
-        pass
-    elif resMax == int:
+    resMax = raw_input('set the resolution maxi, default is : the one used originaly in your input files')
+    #if resMax == "":
+        
+    if resMax == int:
         for lines in xdsinp:
             if re.findall(r"INCLUDE_RESOLUTION_RANGE=", lines):
                 xdsinp.__setitem__(xdsinp.index(lines), "INCLUDE_RESOLUTION_RANGE= 50.000    "+resMax+"\n")
@@ -176,16 +176,15 @@ for lines in xdsinp:
         #print listOfFile
 # create link which point to the original XDS_ASCII.HKL files
 for i in listOfFile:
-    print i #debug
+    print i+"c'est la" #debug
     link = symlink_creation(arg[:-10]+i[15:], "./"+str(resultFile)+"/"+str(listOfFile.index(i))+".HKL")
-    print link #debug
+listofFolder = []
 for scheme in listOfexperiment:
     print scheme
-    print resultFile
+    #print str(resultFile)+"c le result file"
     #listofFolder = sorted(glob.glob(resultFile+"/"+"scheme*"))
-    listofFolder = []
     listofFolder.append(resultFile+"/"+"scheme"+ str(listOfexperiment.index(scheme)))
-print listofFolder    #debug
+print str(listofFolder)+"list of folder"   #debug
 
 for path in listofFolder:
     os.mkdir(path)
@@ -195,8 +194,7 @@ for path in listofFolder:
 file2write = []
 for scheme in listOfexperiment:
     settings = scheme
-    editFilePath(xdsinp)
-    
+    editFilePath(xdsinp)    
     resolutionShells(xdsinp)
     changeFriedelsettings(xdsinp, settings)
     merge(xdsinp, settings)

@@ -9,7 +9,6 @@ import os
 import sys
 import re
 import time
-import glob
 
 def StartingOpen():              
     global arg
@@ -20,9 +19,7 @@ def StartingOpen():
                     global xdsinp                    
                     xdsinp = input_file.readlines()
                     for lines in xdsinp :
-                        #print xdsinp #debug
                         if re.search(r"XSCALE", lines):
-                            #print "XSCALE.INP is take in count"
                             create = True
                     if create == True:
                         print "XSCALE.INP is take in count"
@@ -71,7 +68,9 @@ def changeFriedelsettings(xdsinp, settings):
             if re.findall(r"FRIEDEL'S_LAW=", lines):
                 xdsinp.__setitem__(xdsinp.index(lines), "      FRIEDEL'S_LAW= FALSE\n")
     else :
-        pass
+        for lines in xdsinp:
+            if re.findall(r"FRIEDEL'S_LAW=", lines):
+                xdsinp.__setitem__(xdsinp.index(lines), "      FRIEDEL'S_LAW= TRUE\n")
 
 def settings_XDS_strictAbsCorr(xdsinp, settings):
   ### strict abs correction : 
@@ -106,34 +105,36 @@ def correction(xdsinp, settings):
         for lines in xdsinp:
             if re.findall(r"INPUT_FILE=", lines):        
                 xdsinp.insert(xdsinp.index(lines)+1, "      CORRECTIONS= DECAY MODULATION ABSORBTION\n")
-    if "-corr-none" in settings:
+    elif "-corr-none" in settings:
         for lines in xdsinp:
             if re.findall(r"INPUT_FILE=", lines):        
-                xdsinp.insert(xdsinp.index(lines)+1, "      !CORRECTIONS= ignored\n")      
-    if "-decay" in settings : 
+                xdsinp.insert(xdsinp.index(lines)+1, "      CORRECTIONS=!\n")      
+    elif "-decay" in settings : 
          for lines in xdsinp:           
             if re.findall(r"INPUT_FILE=", lines):        
                 xdsinp.insert(xdsinp.index(lines)+1, "      CORRECTIONS= DECAY\n")
-    if "-mod" in settings :
+    elif "-mod" in settings :
          for lines in xdsinp:
             if re.findall(r"INPUT_FILE=", lines):        
                 xdsinp.insert(xdsinp.index(lines)+1, "      CORRECTIONS= MODULATION\n")       
-    if "-abs" in settings :
+    elif  "-abs" in settings :
          for lines in xdsinp:
             if re.findall(r"INPUT_FILE=", lines):        
                  xdsinp.insert(xdsinp.index(lines)+1, "      CORRECTIONS= ABSORBTION\n")         
 
 def resolutionMax(xdsinp):
-    global resMax    
-    resMax = raw_input('set the resolution maxi, default is : the one used originaly in your input files')
-    #if resMax == "":
+    global resMax   
+    try :
+        resMax = float(raw_input('set the resolution maxi, default is : the one used originaly in your input files'))
+        for lines in xdsinp:
+            if re.findall(r"INCLUDE_RESOLUTION_RANGE=", lines):               
+                xdsinp.__setitem__(xdsinp.index(lines), "INCLUDE_RESOLUTION_RANGE= 50.000    "+str(resMax)+"\n")    
+    except : 
         
-    if resMax == int:
         for lines in xdsinp:
             if re.findall(r"INCLUDE_RESOLUTION_RANGE=", lines):
-                xdsinp.__setitem__(xdsinp.index(lines), "INCLUDE_RESOLUTION_RANGE= 50.000    "+resMax+"\n")
-    else :
-        pass
+                resMax = float(lines[-10:])  
+
 
 def resolutionShells(xdsinp):
     shellsToUse = []
@@ -141,28 +142,31 @@ def resolutionShells(xdsinp):
     for nb in listOFres:
         if nb >= resMax:
             shellsToUse.append(nb)
-    for lines in xdsinp:
-        if re.findall(r"RESOLUTION_SHELLS=", lines):
-            xdsinp.__setitem__(xdsinp.index(lines), "RESOLUTION_SHELLS="+str(shellsToUse))
-    for lines in xdsinp:
-        if re.findall(r"RESOLUTION_SHELLS=", lines):            
-            newline = lines            
-            newline = newline.replace("[", " ")
-            newline = newline.replace("]", "\n")
-            newline = newline.replace(",", "")
-            xdsinp.__setitem__(xdsinp.index(lines), newline)
+            for lines in xdsinp:
+                if re.findall(r"RESOLUTION_SHELLS=", lines):
+                    xdsinp.__setitem__(xdsinp.index(lines), "RESOLUTION_SHELLS="+str(shellsToUse))
+            for lines in xdsinp:
+                if re.findall(r"RESOLUTION_SHELLS=", lines):            
+                    newline = lines            
+                    newline = newline.replace("[", " ")
+                    newline = newline.replace("]", "\n")
+                    newline = newline.replace(",", "")
+                    xdsinp.__setitem__(xdsinp.index(lines), newline)
+
+            
+    
 
 
 
+scheme0 = ["-corr","-ano"]
+scheme1 = ["-sa", "-corr", "-ano"] 
+scheme2 = ["-sa","-corr", "-noAno"]
+scheme3 = ["-zd", "-corr", "-ano"]
+scheme4 = ["-zd", "-sa", "-corr", "-ano"]
+scheme5 = ["-zd", "-sa", "-corr", "-noAno"]
 
-
-scheme0 = ["-sa","-corr","-ano"]
-scheme1 = ["-zd", "-corr", "-noAno"] 
-scheme2 = ["-r", "-Prs0", "-corr-none", "-ano"]
-scheme3 = ["-r", "-Prs0", "-corr", "-ano"]
-scheme4 = ["-r", "Prs1", "-corr", "-ano"]
  
-listOfexperiment = [scheme0, scheme1]
+listOfexperiment = [scheme0, scheme1, scheme2, scheme3, scheme4, scheme5]
 listOfFile = []             
 print listOfexperiment  #debug
 #open file and create output directory
@@ -173,24 +177,17 @@ resolutionMax(xdsinp)
 for lines in xdsinp:
     if re.findall(r"INPUT_FILE=", lines):
         listOfFile.append(lines)
-        #print listOfFile
 # create link which point to the original XDS_ASCII.HKL files
 for i in listOfFile:
-    print i+"c'est la" #debug
-    link = symlink_creation(arg[:-10]+i[15:], "./"+str(resultFile)+"/"+str(listOfFile.index(i))+".HKL")
+    link = symlink_creation(arg[:-10]+i[15:-1], "./"+str(resultFile)+"/"+str(listOfFile.index(i))+".HKL")
 listofFolder = []
 for scheme in listOfexperiment:
     print scheme
-    #print str(resultFile)+"c le result file"
-    #listofFolder = sorted(glob.glob(resultFile+"/"+"scheme*"))
     listofFolder.append(resultFile+"/"+"scheme"+ str(listOfexperiment.index(scheme)))
 print str(listofFolder)+"list of folder"   #debug
 
 for path in listofFolder:
-    os.mkdir(path)
-    #foldernum = listOfexperiment.index(scheme) 
-    #print foldernum #debug
-    #print str(listofFolder[foldernum])+"kk"    
+    os.mkdir(path)   
 file2write = []
 for scheme in listOfexperiment:
     settings = scheme
@@ -198,22 +195,21 @@ for scheme in listOfexperiment:
     resolutionShells(xdsinp)
     changeFriedelsettings(xdsinp, settings)
     merge(xdsinp, settings)
+    for line in xdsinp:    
+        if re.findall(r"CORRECTIONS=", line):        
+            xdsinp.pop(xdsinp.index(line))
     correction(xdsinp, settings)
+    for line in xdsinp:    
+        if re.findall(r"CRYSTAL_NAME=", line):        
+            xdsinp.pop(xdsinp.index(line))   
     zerodDose(xdsinp, settings)
+    for line in xdsinp:    
+        if re.findall(r"STRICT_ABSORPTION=", line):        
+            xdsinp.pop(xdsinp.index(line))     
     settings_XDS_strictAbsCorr(xdsinp, settings)
-    
-    file2write.append(xdsinp)
-    print file2write #debug
-#    listofFolder = sorted(glob.glob(resultFile+"/"+"scheme*"))
-#    print listofFolder    #debug
-#    foldernum = listOfexperiment.index(scheme) 
-#    print foldernum #debug
-#    print str(listofFolder[foldernum])+"kk"
-for newInp in file2write: 
-    i =0
+    i = listOfexperiment.index(scheme)
     pathXscaleInp = str(listofFolder[i])+"/"
-#    print foldernum  #debug      
-    writing_list_in_file(pathXscaleInp, file2write[i])
-    i+=1
+    writing_list_in_file(pathXscaleInp, xdsinp)
+
 
 

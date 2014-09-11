@@ -305,7 +305,7 @@ scheme2 = ["-r", "-Prs0", "-corr-none", "-ano"]
 scheme3 = ["-r", "-Prs0", "-corr", "-ano"]
 scheme4 = ["-r", "Prs1", "-corr", "-ano"]
  
-listOfexperiment = [scheme0, scheme1]
+listOfexperiment = [scheme0, scheme1, scheme2, scheme3, scheme4]
 listOfFile = ["X-CORRECTIONS.cbf", "Y-CORRECTIONS.cbf", "GAIN.cbf", "BLANK.cbf", 
               "BKGINIT.cbf", "img"]             
 

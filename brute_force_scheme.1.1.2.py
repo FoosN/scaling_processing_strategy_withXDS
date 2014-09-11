@@ -108,7 +108,10 @@ def settings_XDS_resolution(original_dict_params, settings):  # settings must be
         print "Problem in resolution settings"
     return  folderNameExtension
   
-def catch_XDS_resolution(original_dict_params, settings):  # settings must be a list of stuff that we want explore
+def catch_XDS_resolution(original_dict_params, settings):  
+""" settings must be a list of patrameters wich may influence
+    scaling or integration that we want to explore 
+"""
   ### resolution max setting
     if "-r" or "all" in settings:   
         resolution = str(original_dict_params["INCLUDE_RESOLUTION"])
@@ -121,7 +124,7 @@ def catch_XDS_resolution(original_dict_params, settings):  # settings must be a 
             folderNameExtension = resolution2test
             t += 1
         
-# ici ce bloc n'est pas teste, ce qui est au dessus est OK
+# not tested
     elif "-r" or "all" in settings:
         #define the test resolution range pour test :  
         reso_cut = resolution2test[-1]
@@ -213,7 +216,8 @@ def prepare4writing_xdsINP(xdsinp, dictOfKword, listOfexperiment):
         dico = listofDicos[z]
         for res in dico.keys():
             while dico.get("res"+ str(resNbr)):
-#ici boucle for avec le listofDicos pour generer les xdsinp en ajoutant le contenu des dicos au xdsinp avec pour chaque res un xdsinp           
+        # this loop, is made in the listOfDicos (Dcit list) to generate XDS.INP
+        # by adding the parameters contained in the dicts.          
                 newXdsinp = xdsinp[:]
                 newXdsinp.append(dico.get("res"+ str(resNbr)))
                 newXdsinp.append(dico.get("FRIEDEL'S_LAW="))
@@ -227,11 +231,7 @@ def prepare4writing_xdsINP(xdsinp, dictOfKword, listOfexperiment):
         z += 1
         resNbr = 1        
     return newDictsXds
-                
-                                    
-                #outputfile = open(os.path.join(directory2, "XDS.INP"), 'a')
-                #outputfile.write(xdsinp)
-                    
+                  
         
         
 ##############################
@@ -272,8 +272,7 @@ def makeResultFile(create):
         except OSError:
             print 'WARNING : Problem to create Directory for results'
             
-#        if not "File exists" in e:
-#           exit(0)    
+ 
     
 def FillinFolder(create, resultFile, listOfexperiment, listOfFile, xdsinp):    
     if create:
@@ -298,8 +297,8 @@ def FillinFolder(create, resultFile, listOfexperiment, listOfFile, xdsinp):
     return base2editeJob
 
 
-#reals final progs:
-
+""" this is really the program to generate automaticaly different XDS.INP
+"""
 scheme0 = ["all", "-Prs0","-corr","-ano"]
 scheme1 = ["all", "-Prs1", "-corr", "-noAno"] 
 scheme2 = ["-r", "-Prs0", "-corr-none", "-ano"]

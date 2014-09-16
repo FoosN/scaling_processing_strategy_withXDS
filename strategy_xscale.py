@@ -138,7 +138,20 @@ def correction(xdsinp, settings):
     elif  "-abs" in settings :
          for lines in xdsinp:
             if re.findall(r"INPUT_FILE=", lines):        
-                 xdsinp.insert(xdsinp.index(lines)+1, "      CORRECTIONS= ABSORBTION\n")         
+                 xdsinp.insert(xdsinp.index(lines)+1, "      CORRECTIONS= ABSORBTION\n") 
+    elif  "-dec_mod" in settings :
+         for lines in xdsinp:
+            if re.findall(r"INPUT_FILE=", lines):        
+                 xdsinp.insert(xdsinp.index(lines)+1, "      CORRECTIONS= DECAY MODULATION\n")                 
+    elif  "-dec_abs" in settings :
+         for lines in xdsinp:
+            if re.findall(r"INPUT_FILE=", lines):        
+                 xdsinp.insert(xdsinp.index(lines)+1, "      CORRECTIONS= DECAY ABSORBTION\n")                 
+    elif  "-mod_abs" in settings :
+         for lines in xdsinp:
+            if re.findall(r"INPUT_FILE=", lines):        
+                 xdsinp.insert(xdsinp.index(lines)+1, "      CORRECTIONS= MODULATION ABSORBTION\n")                 
+                 
 
 def resolutionMax(xdsinp):
     global resMax   
@@ -175,17 +188,67 @@ def resolutionShells(xdsinp):
             
     
 
-# this defined 5 schemes for automatic usage of this script in order to 
+# this defined schemes for automatic usage of this script in order to 
 # test different strategy of scaling with XSCALE
-scheme0 = ["-corr","-ano"]
-scheme1 = ["-sa", "-corr", "-ano"] 
-scheme2 = ["-sa","-corr", "-noAno"]
-scheme3 = ["-zd", "-corr", "-ano"]
-scheme4 = ["-zd", "-sa", "-corr", "-ano"]
-scheme5 = ["-zd", "-sa", "-corr", "-noAno"]
 
+scheme0 = ["-r", "-corr", "-sa0"]
+scheme1 = ["-r", "-corr", "-sa1"] 
+scheme2 = ["-r", "-corr", "-sa2"]
+
+scheme0_1 = ["-r", "-decay", "-sa0"]
+scheme0_2 = ["-r", "-modul", "-sa0"]
+scheme0_3 = ["-r", "-abs", "-sa0"]
+scheme0_4 = ["-r", "-dec_mod", "-sa0"]
+scheme0_5 = ["-r", "-dec_abs", "-sa0"]
+scheme0_6 = ["-r", "-mod_abs", "-sa0"]
+scheme0_7 = ["-r", "-corr_none", "-sa0"]
+
+scheme1_1 = ["-r", "-decay", "-sa1"]
+scheme1_2 = ["-r", "-modul", "-sa1"]
+scheme1_3 = ["-r", "-abs", "-sa1"]
+scheme1_4 = ["-r", "-dec_mod", "-sa1"]
+scheme1_5 = ["-r", "-dec_abs", "-sa1"]
+scheme1_6 = ["-r", "-mod_abs", "-sa1"]
+scheme1_7 = ["-r", "-corr_none", "-sa1"]
+
+scheme2_1 = ["-r", "-decay", "-sa2"]
+scheme2_2 = ["-r", "-modul", "-sa2"]
+scheme2_3 = ["-r", "-abs", "-sa2"]
+scheme2_4 = ["-r", "-dec_mod", "-sa2"]
+scheme2_5 = ["-r", "-dec_abs", "-sa2"]
+scheme2_6 = ["-r", "-mod_abs", "-sa2"]
+scheme2_7 = ["-r", "-corr_none", "-sa2"] 
  
-listOfexperiment = [scheme0, scheme1, scheme2, scheme3, scheme4, scheme5]
+scheme0_a = ["-r", "-zd", "-corr", "-sa0"]
+scheme1_a = ["-r", "-zd", "-corr", "-sa1"] 
+scheme2_a = ["-r", "-zd", "-corr", "-sa2"] 
+ 
+ 
+scheme0_1_a = ["-r", "-zd", "-Prs1", "-decay", "-sa0"]
+scheme0_2_a = ["-r", "-zd", "-Prs1", "-modul", "-sa0"]
+scheme0_3_a = ["-r", "-zd", "-Prs1", "-abs", "-sa0"]
+scheme0_4_a = ["-r", "-zd", "-Prs1", "-dec_mod", "-sa0"]
+scheme0_5_a = ["-r", "-zd", "-Prs1", "-dec_abs", "-sa0"]
+scheme0_6_a = ["-r", "-zd", "-Prs1", "-mod_abs", "-sa0"]
+scheme0_7_a = ["-r", "-zd", "-Prs1", "-corr_none", "-sa0"]
+
+scheme1_1_a = ["-r", "-zd", "-Prs1", "-decay", "-sa1"]
+scheme1_2_a = ["-r", "-zd", "-Prs1", "-modul", "-sa1"]
+scheme1_3_a = ["-r", "-zd", "-Prs1", "-abs", "-sa1"]
+scheme1_4_a = ["-r", "-zd", "-Prs1", "-dec_mod", "-sa1"]
+scheme1_5_a = ["-r", "-zd", "-Prs1", "-dec_abs", "-sa1"]
+scheme1_6_a = ["-r", "-zd", "-Prs1", "-mod_abs", "-sa1"]
+scheme1_7_a = ["-r", "-zd", "-Prs1", "-corr_none", "-sa1"]
+
+scheme2_1_a = ["-r", "-zd", "-Prs1", "-decay", "-sa2"]
+scheme2_2_a = ["-r", "-zd", "-Prs1", "-modul", "-sa2"]
+scheme2_3_a = ["-r", "-zd", "-Prs1", "-abs", "-sa2"]
+scheme2_4_a = ["-r", "-zd", "-Prs1", "-dec_mod", "-sa2"]
+scheme2_5_a = ["-r", "-zd", "-Prs1", "-dec_abs", "-sa2"]
+scheme2_6_a = ["-r", "-zd", "-Prs1", "-mod_abs", "-sa2"]
+scheme2_7_a = ["-r", "-zd", "-Prs1", "-corr_none", "-sa2"]
+ 
+listOfexperiment = [scheme0, scheme1, scheme2]
 listOfFile = []             
 #open file and create output directory
 create = StartingOpen()

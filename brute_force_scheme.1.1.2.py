@@ -136,10 +136,10 @@ def catch_XDS_resolution(original_dict_params, settings):
     
 def settings_XDS_strictAbsCorr(original_dict_params, settings):
   ### strict abs correction : 
-    if "-sa" or "all" in settings:
-        dictio_value_edition(original_dict_params, " STRICT_ABSORPTION","STRICT_ABSORPTION= True \n" )
+    if "-sa0" or "-sa2" in settings:
+        dictio_value_edition(original_dict_params, " STRICT_ABSORPTION","STRICT_ABSORPTION= TRUE \n" )
     else :
-        dictio_value_edition(original_dict_params, " STRICT_ABSORPTION","STRICT_ABSORPTION= False \n")
+        dictio_value_edition(original_dict_params, " STRICT_ABSORPTION","STRICT_ABSORPTION= FALSE \n")
         pass
 
    ### pre-scaling management :
@@ -169,17 +169,25 @@ def settings_XDS_correction(original_dict, settings):
         original_dict["corrections"] = " CORRECTIONS=! \n"
     elif "-corr" in settings:
         original_dict["corrections"] = " CORRECTIONS=ALL \n"
-    elif "-coor_decay" in settings :
+    elif "-corr_decay" in settings :
         original_dict["corrections"] = " CORRECTIONS=DECAY \n"
-    elif "-coor_modul" in settings :
+    elif "-corr_modul" in settings :
         original_dict["corrections"] = " CORRECTIONS=MODULATION \n"        
-    elif "-coor_absorp" in settings :
-        original_dict["corrections"] = " CORRECTIONS=ABSORP \n"        
+    elif "-corr_absorp" in settings :
+        original_dict["corrections"] = " CORRECTIONS=ABSORP \n"    
+    elif "corr_dec_mod" in settings : 
+        original_dict["corrections"] = " CORRECTIONS=DECAY MODULATION \n"
+    elif "corr_dec_abs" in settings : 
+        original_dict["corrections"] = " CORRECTIONS=DECAY ABSORP \n"        
+    elif "corr_mod_abs" in settings : 
+        original_dict["corrections"] = " CORRECTIONS=MODULATION ABSORP \n"         
+        
+        
 
 def settings_XDS_friedel(original_dict, settings):
-    if "-ano" in settings:                     
+    if "-sa1" or "-sa2" in settings:                     
         original_dict["FRIEDEL'S_LAW="] = " FRIEDEL'S_LAW= FALSE \n"
-    elif "-noAno" in settings:
+    elif "-sa0" in settings:
         original_dict["FRIEDEL'S_LAW="] = " FRIEDEL'S_LAW= TRUE \n"
         
 ##########################
@@ -246,7 +254,6 @@ def StartingOpen():
                     global xdsinp                    
                     xdsinp = input_file.readlines()
                     for lines in xdsinp :
-                        #print xdsinp #debug
                         if re.findall(r"JOB=", lines):
                             print "XDS.INP is take in count"
                             create = True
@@ -299,13 +306,69 @@ def FillinFolder(create, resultFile, listOfexperiment, listOfFile, xdsinp):
 
 """ this is really the program to generate automaticaly different XDS.INP
 """
-scheme0 = ["all", "-Prs0","-corr","-ano"]
-scheme1 = ["all", "-Prs1", "-corr", "-noAno"] 
-scheme2 = ["-r", "-Prs0", "-corr-none", "-ano"]
-scheme3 = ["-r", "-Prs0", "-corr", "-ano"]
-scheme4 = ["-r", "Prs1", "-corr", "-ano"]
+# reminder : sa0 : Friedel = true and Strict-Abs = true
+# sa1 : Friedel = false and Strict-Abs = false
+# sa2 : Friedel = false and Strict-Abs = true
+
+scheme0 = ["-r", "-Prs0", "-corr", "-sa0"]
+scheme1 = ["-r", "-Prs0", "-corr", "-sa1"] 
+scheme2 = ["-r", "-Prs0", "-corr", "-sa2"]
+
+scheme0_1 = ["-r", "-Prs0", "-corr_decay", "-sa0"]
+scheme0_2 = ["-r", "-Prs0", "-corr_modul", "-sa0"]
+scheme0_3 = ["-r", "-Prs0", "-corr_absorbp", "-sa0"]
+scheme0_4 = ["-r", "-Prs0", "-corr_dec_mod", "-sa0"]
+scheme0_5 = ["-r", "-Prs0", "-corr_dec_abs", "-sa0"]
+scheme0_6 = ["-r", "-Prs0", "-corr_mod_abs", "-sa0"]
+scheme0_7 = ["-r", "-Prs0", "-corr_none", "-sa0"]
+
+scheme1_1 = ["-r", "-Prs0", "-corr_decay", "-sa1"]
+scheme1_2 = ["-r", "-Prs0", "-corr_modul", "-sa1"]
+scheme1_3 = ["-r", "-Prs0", "-corr_absorbp", "-sa1"]
+scheme1_4 = ["-r", "-Prs0", "-corr_dec_mod", "-sa1"]
+scheme1_5 = ["-r", "-Prs0", "-corr_dec_abs", "-sa1"]
+scheme1_6 = ["-r", "-Prs0", "-corr_mod_abs", "-sa1"]
+scheme1_7 = ["-r", "-Prs0", "-corr_none", "-sa1"]
+
+scheme2_1 = ["-r", "-Prs0", "-corr_decay", "-sa2"]
+scheme2_2 = ["-r", "-Prs0", "-corr_modul", "-sa2"]
+scheme2_3 = ["-r", "-Prs0", "-corr_absorbp", "-sa2"]
+scheme2_4 = ["-r", "-Prs0", "-corr_dec_mod", "-sa2"]
+scheme2_5 = ["-r", "-Prs0", "-corr_dec_abs", "-sa2"]
+scheme2_6 = ["-r", "-Prs0", "-corr_mod_abs", "-sa2"]
+scheme2_7 = ["-r", "-Prs0", "-corr_none", "-sa2"] 
  
-listOfexperiment = [scheme0, scheme1, scheme2, scheme3, scheme4]
+scheme0_a = ["-r", "-Prs1", "-corr", "-sa0"]
+scheme1_a = ["-r", "-Prs1", "-corr", "-sa1"] 
+scheme2_a = ["-r", "-Prs1", "-corr", "-sa2"] 
+ 
+ 
+scheme0_1_a = ["-r", "-Prs1", "-corr_decay", "-sa0"]
+scheme0_2_a = ["-r", "-Prs1", "-corr_modul", "-sa0"]
+scheme0_3_a = ["-r", "-Prs1", "-corr_absorbp", "-sa0"]
+scheme0_4_a = ["-r", "-Prs1", "-corr_dec_mod", "-sa0"]
+scheme0_5_a = ["-r", "-Prs1", "-corr_dec_abs", "-sa0"]
+scheme0_6_a = ["-r", "-Prs1", "-corr_mod_abs", "-sa0"]
+scheme0_7_a = ["-r", "-Prs1", "-corr_none", "-sa0"]
+
+scheme1_1_a = ["-r", "-Prs1", "-corr_decay", "-sa1"]
+scheme1_2_a = ["-r", "-Prs1", "-corr_modul", "-sa1"]
+scheme1_3_a = ["-r", "-Prs1", "-corr_absorbp", "-sa1"]
+scheme1_4_a = ["-r", "-Prs1", "-corr_dec_mod", "-sa1"]
+scheme1_5_a = ["-r", "-Prs1", "-corr_dec_abs", "-sa1"]
+scheme1_6_a = ["-r", "-Prs1", "-corr_mod_abs", "-sa1"]
+scheme1_7_a = ["-r", "-Prs1", "-corr_none", "-sa1"]
+
+scheme2_1_a = ["-r", "-Prs1", "-corr_decay", "-sa2"]
+scheme2_2_a = ["-r", "-Prs1", "-corr_modul", "-sa2"]
+scheme2_3_a = ["-r", "-Prs1", "-corr_absorbp", "-sa2"]
+scheme2_4_a = ["-r", "-Prs1", "-corr_dec_mod", "-sa2"]
+scheme2_5_a = ["-r", "-Prs1", "-corr_dec_abs", "-sa2"]
+scheme2_6_a = ["-r", "-Prs1", "-corr_mod_abs", "-sa2"]
+scheme2_7_a = ["-r", "-Prs1", "-corr_none", "-sa2"]
+
+
+listOfexperiment = [scheme0, scheme1, scheme2]
 listOfFile = ["X-CORRECTIONS.cbf", "Y-CORRECTIONS.cbf", "GAIN.cbf", "BLANK.cbf", 
               "BKGINIT.cbf", "img"]             
 

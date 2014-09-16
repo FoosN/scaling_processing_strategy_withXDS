@@ -262,8 +262,27 @@ def StartingOpen():
                     
         except:
             print ("it's not XDS.INP or it's corrupted")
-            exit(0)       
-
+            exit(0)    
+            
+def givenUserOption():
+    option1 = raw_input ('Please chose if you want use the parameter \
+    which concern the scaling parameters per frames [N/y] : ' )
+    if option1 == '' :
+        option1 = 'N'
+    else:
+        option1 = options1
+    
+    option2 = raw_input ('Please chose if you want use the parameter \
+    which modify the CORRECTION options "m" for MODULATION, "d" for DECAY, "a" for \
+    ABSORP, "n" for NONE default is ALL (example : md) :')
+    if option2 =='':
+        option2 = 'all'
+    else:
+        option2 = option2
+    return option1
+    return option2
+    
+    
 def makeResultFile(create):
     if create :
         #global resultFile        
@@ -369,6 +388,11 @@ scheme2_7_a = ["-r", "-Prs1", "-corr_none", "-sa2"]
 
 
 listOfexperiment = [scheme0, scheme1, scheme2]
+#givenUserOption
+#if option1 == 'y'
+#    listOfexperiment = listOfexperiment1
+#elif opti
+
 listOfFile = ["X-CORRECTIONS.cbf", "Y-CORRECTIONS.cbf", "GAIN.cbf", "BLANK.cbf", 
               "BKGINIT.cbf", "img"]             
 

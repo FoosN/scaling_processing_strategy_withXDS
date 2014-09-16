@@ -156,7 +156,7 @@ def correction(xdsinp, settings):
 def resolutionMax(xdsinp):
     global resMax   
     try :
-        resMax = float(raw_input('set the resolution maxi, default is : the one used originaly in your input files'))
+        resMax = float(raw_input('set the resolution maxi, default is : the one used originaly in your input files : '))
         for lines in xdsinp:
             if re.findall(r"INCLUDE_RESOLUTION_RANGE=", lines):               
                 xdsinp.__setitem__(xdsinp.index(lines), "INCLUDE_RESOLUTION_RANGE= 50.000    "+str(resMax)+"\n")    
@@ -185,7 +185,23 @@ def resolutionShells(xdsinp):
                     newline = newline.replace(",", "")
                     xdsinp.__setitem__(xdsinp.index(lines), newline)
 
-            
+def givenUserOption():
+    option1 = raw_input ('Please chose if you want use the parameter \
+    ZERO_DOSE [N/y] : ')
+    if option1 == '' :
+        option1 = 'N'
+    else:
+        option1 = option1
+    
+    option2 = raw_input ('Please chose if you want use the parameter \
+    which modify the CORRECTION options "m" for MODULATION, "d" for DECAY, "a" for \
+    ABSORP, "n" for NONE default is ALL (example : md) :')
+    if option2 =='':
+        option2 = 'all'
+    else:
+        option2 = option2
+    return option1
+    return option2            
     
 
 # this defined schemes for automatic usage of this script in order to 
@@ -249,6 +265,11 @@ scheme2_6_a = ["-r", "-zd", "-Prs1", "-mod_abs", "-sa2"]
 scheme2_7_a = ["-r", "-zd", "-Prs1", "-corr_none", "-sa2"]
  
 listOfexperiment = [scheme0, scheme1, scheme2]
+#givenUserOption
+#if option1 == 'y'
+#    listOfexperiment = listOfexperiment1
+#elif opti
+
 listOfFile = []             
 #open file and create output directory
 create = StartingOpen()

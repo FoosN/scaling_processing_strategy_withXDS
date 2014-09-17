@@ -109,9 +109,8 @@ def settings_XDS_resolution(original_dict_params, settings):  # settings must be
     return  folderNameExtension
   
 def catch_XDS_resolution(original_dict_params, settings):  
-""" settings must be a list of patrameters wich may influence
-    scaling or integration that we want to explore 
-"""
+#"""settings must be a list of patrameters wich may influence\
+#        scaling or integration that we want to explore"""
   ### resolution max setting
     if "-r" or "all" in settings:   
         resolution = str(original_dict_params["INCLUDE_RESOLUTION"])
@@ -270,7 +269,7 @@ def givenUserOption():
     if option1 == '' :
         option1 = 'N'
     else:
-        option1 = options1
+        option1 = option1
     
     option2 = raw_input ('Please chose if you want use the parameter \
     which modify the CORRECTION options "m" for MODULATION, "d" for DECAY, "a" for \
@@ -279,8 +278,8 @@ def givenUserOption():
         option2 = 'all'
     else:
         option2 = option2
-    return option1
-    return option2
+    listofOptions = [option1, option2] 
+    return listofOptions
     
     
 def makeResultFile(create):
@@ -387,11 +386,82 @@ scheme2_6_a = ["-r", "-Prs1", "-corr_mod_abs", "-sa2"]
 scheme2_7_a = ["-r", "-Prs1", "-corr_none", "-sa2"]
 
 
-listOfexperiment = [scheme0, scheme1, scheme2]
-#givenUserOption
-#if option1 == 'y'
-#    listOfexperiment = listOfexperiment1
-#elif opti
+listOfexperiment1 = [scheme0, scheme1, scheme2]
+listOfexperiment2 = [scheme0_7, scheme1_7, scheme2_7]
+listOfexperiment3 = [scheme0_2, scheme1_2, scheme2_2]
+listOfexperiment4 = [scheme0_1, scheme1_1, scheme2_1]
+listOfexperiment5 = [scheme0_3, scheme1_3, scheme2_3]
+listOfexperiment6 = [scheme0_5, scheme1_5, scheme2_5]
+listOfexperiment7 = [scheme0_4, scheme1_4, scheme2_4]
+listOfexperiment8 = [scheme0_6, scheme1_6, scheme2_6]
+
+listOfexperiment1_a = [scheme0_a, scheme1_a, scheme2_a]
+listOfexperiment2_a = [scheme0_7_a, scheme1_7_a, scheme2_7_a]
+listOfexperiment3_a = [scheme0_2_a, scheme1_2_a, scheme2_2_a]
+listOfexperiment4_a = [scheme0_1_a, scheme1_1_a, scheme2_1_a]
+listOfexperiment5_a = [scheme0_3_a, scheme1_3_a, scheme2_3_a]
+listOfexperiment6_a = [scheme0_5_a, scheme1_5_a, scheme2_5_a]
+listOfexperiment7_a = [scheme0_4_a, scheme1_4_a, scheme2_4_a]
+listOfexperiment8_a = [scheme0_6_a, scheme1_6_a, scheme2_6_a]
+
+listofOptions = givenUserOption()
+if listofOptions[0] == 'y':
+    Prs = 'Prs1'
+else :
+    Prs = 'Prs0'
+if listofOptions[1] == 'm':
+   corr = 'modulation'
+elif listofOptions[1] == 'd':
+   corr = 'decay'
+elif listofOptions[1] == 'a':
+   corr = 'absorp'
+elif listofOptions[1] == 'n':
+   corr = 'none'     
+elif listofOptions[1] == 'all':
+   corr = 'all'
+elif listofOptions[1] == 'da' or 'ad':
+   corr = 'abs_dec'
+elif listofOptions[1] == 'dm' or 'md':
+   corr = 'mod_dec'
+else :
+   corr = 'abs_mod'
+
+if Prs == 'Prs0' and corr == 'all':
+    listOfexperiment = listOfexperiment1
+elif Prs == 'Prs0' and corr == 'none':
+    listOfexperiment = listOfexperiment2
+elif Prs == 'Prs0' and corr == 'modulation':
+    listOfexperiment = listOfexperiment3
+elif Prs == 'Prs0' and corr == 'decay':
+    listOfexperiment = listOfexperiment4
+elif Prs == 'Prs0' and corr == 'absorp':
+    listOfexperiment = listOfexperiment5
+elif Prs == 'Prs0' and corr == 'abs_dec':
+    listOfexperiment = listOfexperiment6    
+elif Prs == 'Prs0' and corr == 'mod_dec':
+    listOfexperiment = listOfexperiment7
+elif Prs == 'Prs0' and corr == 'abs_mod':
+    listOfexperiment = listOfexperiment8   
+    
+elif Prs == 'Prs1' and corr == 'all':
+    listOfexperiment = listOfexperiment1_a
+elif Prs == 'Prs1' and corr == 'none':
+    listOfexperiment = listOfexperiment2_a
+elif Prs == 'Prs1' and corr == 'modulation':
+    listOfexperiment = listOfexperiment3_a
+elif Prs == 'Prs1' and corr == 'decay':
+    listOfexperiment = listOfexperiment4_a
+elif Prs == 'Prs1' and corr == 'absorp':
+    listOfexperiment = listOfexperiment5_a
+elif Prs == 'Prs1' and corr == 'abs_dec':
+    listOfexperiment = listOfexperiment6_a    
+elif Prs == 'Prs1' and corr == 'mod_dec':
+    listOfexperiment = listOfexperiment7_a
+elif Prs == 'Prs1' and corr == 'abs_mod':
+    listOfexperiment = listOfexperiment8_a     
+
+        
+
 
 listOfFile = ["X-CORRECTIONS.cbf", "Y-CORRECTIONS.cbf", "GAIN.cbf", "BLANK.cbf", 
               "BKGINIT.cbf", "img"]             

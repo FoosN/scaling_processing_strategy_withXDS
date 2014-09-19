@@ -1,9 +1,7 @@
+#!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Aug  4 17:17:39 2014
-
-@author: proxima1
-"""
+"""Created on Mon Aug  4 17:17:39 2014
+@author: proxima1"""
 
 import os
 import sys
@@ -95,11 +93,11 @@ def settings_XDS_strictAbsCorr(xdsinp, settings):
     if "-sa" in settings:
         for lines in xdsinp:
             if re.findall(r"STRICT_ABSORPTION_CORRECTION=", lines):
-                xdsinp.__setitem__(xdsinp.index(lines), "STRICT_ABSORPTION= TRUE \n" )
+                xdsinp.__setitem__(xdsinp.index(lines), "STRICT_ABSORPTION_CORRECTION= TRUE \n" )
     else :
         for lines in xdsinp:
             if re.findall(r"STRICT_ABSORPTION_CORRECTION=", lines):
-                xdsinp.__setitem__(xdsinp.index(lines), "STRICT_ABSORPTION= FALSE \n" )
+                xdsinp.__setitem__(xdsinp.index(lines), "STRICT_ABSORPTION_CORRECTION= FALSE \n" )
         pass
 
 def zerodDose(xdsinp, settings):

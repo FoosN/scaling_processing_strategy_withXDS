@@ -135,11 +135,13 @@ def catch_XDS_resolution(original_dict_params, settings):
     
 def settings_XDS_strictAbsCorr(original_dict_params, settings):
   ### strict abs correction : 
-    if "-sa0" or "-sa2" in settings:
-        dictio_value_edition(original_dict_params, " STRICT_ABSORPTION","STRICT_ABSORPTION= TRUE \n" )
-    else :
-        dictio_value_edition(original_dict_params, " STRICT_ABSORPTION","STRICT_ABSORPTION= FALSE \n")
-        pass
+    if "-sa0" in settings:
+        dictio_value_edition(original_dict_params, "STRICT_ABSORPTION","STRICT_ABSORPTION_CORRECTION= TRUE \n" )
+    elif "-sa2" in settings:
+        dictio_value_edition(original_dict_params, "STRICT_ABSORPTION","STRICT_ABSORPTION_CORRECTION= TRUE \n")
+    elif "-sa1" in settings:
+        dictio_value_edition(original_dict_params, "STRICT_ABSORPTION","STRICT_ABSORPTION_CORRECTION= FALSE \n")
+       
 
    ### pre-scaling management :
 def settings_XDS_prescal_factor(original_dict, settings):
@@ -180,13 +182,16 @@ def settings_XDS_correction(original_dict, settings):
         original_dict["corrections"] = " CORRECTIONS=DECAY ABSORP \n"        
     elif "corr_mod_abs" in settings : 
         original_dict["corrections"] = " CORRECTIONS=MODULATION ABSORP \n"         
-        
+    else : 
+        original_dict["corrections"] = " CORRECTIONS=ALL \n"
         
 
 def settings_XDS_friedel(original_dict, settings):
-    if "-sa1" or "-sa2" in settings:                     
+    if "-sa1" in settings:
         original_dict["FRIEDEL'S_LAW="] = " FRIEDEL'S_LAW= FALSE \n"
-    elif "-sa0" in settings:
+    elif "-sa2" in settings:
+        original_dict["FRIEDEL'S_LAW="] = " FRIEDEL'S_LAW= FALSE \n"
+    else :
         original_dict["FRIEDEL'S_LAW="] = " FRIEDEL'S_LAW= TRUE \n"
         
 ##########################
@@ -203,10 +208,14 @@ def prepare4writing_xdsINP(xdsinp, dictOfKword, listOfexperiment):
         for lines in xdsinp:#remove old key value in xds INP        
             if re.findall(str(listOfinf[i]), str(lines)):
                 xdsinp.remove(lines)
-        i += 1      
+        i += 1   
     while dicoNbr < len(listOfexperiment):               
-            #number4expe =  listOfexperiment.index(scheme)              
+        #number4expe =  listOfexperiment.index(schemes) 
+        #print number4expe             
+        #print dicoNbr         
         dictOfKword1 = copy.deepcopy(dictOfKword)
+        #print dictOfKword1
+        #print listOfexperiment[dicoNbr]
         settings_XDS_strictAbsCorr(dictOfKword1, listOfexperiment[dicoNbr])
         settings_XDS_friedel(dictOfKword1, listOfexperiment[dicoNbr])
         settings_XDS_correction(dictOfKword1, listOfexperiment[dicoNbr])
@@ -214,6 +223,8 @@ def prepare4writing_xdsINP(xdsinp, dictOfKword, listOfexperiment):
         settings_XDS_resolution(dictOfKword1, listOfexperiment[dicoNbr])
         newDico = dictOfKword1
         listofDicos.append(newDico)
+        #print newDico
+        #print listofDicos
         #print  listOfexperiment[dicoNbr], listofDicos[dicoNbr]   
         dicoNbr += 1
     resNbr = 1
@@ -469,14 +480,24 @@ listOfFile = ["X-CORRECTIONS.cbf", "Y-CORRECTIONS.cbf", "GAIN.cbf", "BLANK.cbf",
 
 create = StartingOpen()
 resultFile = makeResultFile(create)
+#print resultFile
+#print listOfexperiment
+#print listOfFile
+#print xdsinp
 base2editeJob = FillinFolder(create, resultFile, listOfexperiment, listOfFile, xdsinp)
+#print listOfexperiment
+#print base2editeJob
 newDictsXds = prepare4writing_xdsINP(xdsinp, base2editeJob, listOfexperiment)
+#print newDictsXds
 listofKey = sorted(newDictsXds)
 listofFolder = sorted(glob.glob(resultFile+"/"+"scheme*"))
 
 for key in listofKey:
+#    print listofKey
+#    print key
     key = listofKey.index(key)
     file2write = newDictsXds[listofKey[key]]
+    #print file2write    
     pathXds = str(listofFolder[key])+"/"
     writing_list_in_file(pathXds, file2write)
          

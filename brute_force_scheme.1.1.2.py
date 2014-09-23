@@ -99,14 +99,15 @@ def settings_XDS_resolution(original_dict_params, settings):  # settings must be
         original_dict_params["res"+str(t)] = " INCLUDE_RESOLUTION_RANGE= "+ resolution_M +" "+ str(resolution2test[t-1]) + "\n"
         
 # ici ce bloc n'est pas teste, ce qui est au dessus est OK
-    elif "-r" or "all" in settings:
+    #elif "-r" or "all" in settings:
         #define the test resolution range pour test :  
         reso_cut = resolution2test[-1]
         original_dict_params["TEST_RESOLUTION_RANGE"] = "TEST_RESOLUTION_RANGE= 50 "+ str(reso_cut) +"\n"
         folderNameExtension = [reso_cut]
     else :
-        print "Problem in resolution settings"
-    return  folderNameExtension
+        print "coucou"
+    #    print "Problem in resolution settings"
+    #return  folderNameExtension
   
 def catch_XDS_resolution(original_dict_params, settings):  
 #"""settings must be a list of patrameters wich may influence\
@@ -339,9 +340,9 @@ def FillinFolder(create, resultFile, listOfexperiment, listOfFile, xdsinp):
 # sa1 : Friedel = false and Strict-Abs = false
 # sa2 : Friedel = false and Strict-Abs = true
 
-scheme0 = ["-r", "-Prs0", "-corr", "-sa0"]
-scheme1 = ["-r", "-Prs0", "-corr", "-sa1"] 
-scheme2 = ["-r", "-Prs0", "-corr", "-sa2"]
+scheme0 = ["-Prs0", "-corr", "-sa0"]
+scheme1 = ["-Prs0", "-corr", "-sa1"] 
+scheme2 = ["-Prs0", "-corr", "-sa2"]
 
 scheme0_1 = ["-r", "-Prs0", "-corr_decay", "-sa0"]
 scheme0_2 = ["-r", "-Prs0", "-corr_modul", "-sa0"]
@@ -367,9 +368,9 @@ scheme2_5 = ["-r", "-Prs0", "-corr_dec_abs", "-sa2"]
 scheme2_6 = ["-r", "-Prs0", "-corr_mod_abs", "-sa2"]
 scheme2_7 = ["-r", "-Prs0", "-corr_none", "-sa2"] 
  
-scheme0_a = ["-r", "-Prs1", "-corr", "-sa0"]
-scheme1_a = ["-r", "-Prs1", "-corr", "-sa1"] 
-scheme2_a = ["-r", "-Prs1", "-corr", "-sa2"] 
+scheme0_a = ["-Prs1", "-corr", "-sa0"]
+scheme1_a = ["-Prs1", "-corr", "-sa1"] 
+scheme2_a = ["-Prs1", "-corr", "-sa2"] 
  
  
 scheme0_1_a = ["-r", "-Prs1", "-corr_decay", "-sa0"]

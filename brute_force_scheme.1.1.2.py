@@ -308,9 +308,15 @@ def givenUserOption():
         option2 = 'all'
     else:
         option2 = option2
-    listofOptions = [option1, option2] 
-    return listofOptions
     
+    option3 = raw_input ('Please chose if you want to try different resolution\
+ cut-off (N/y): ')
+    if option3 =='':
+        option3 = 'no test'
+    else:
+        option3 = "-r"
+    listofOptions = [option1, option2, option3] 
+    return listofOptions   
     
 def makeResultFile(create):
     if create :
@@ -362,58 +368,58 @@ scheme0 = ["-Prs0", "-corr", "-sa0"]
 scheme1 = ["-Prs0", "-corr", "-sa1"] 
 scheme2 = ["-Prs0", "-corr", "-sa2"]
 
-scheme0_1 = ["-r", "-Prs0", "-corr_decay", "-sa0"]
-scheme0_2 = ["-r", "-Prs0", "-corr_modul", "-sa0"]
-scheme0_3 = ["-r", "-Prs0", "-corr_absorbp", "-sa0"]
-scheme0_4 = ["-r", "-Prs0", "-corr_dec_mod", "-sa0"]
-scheme0_5 = ["-r", "-Prs0", "-corr_dec_abs", "-sa0"]
-scheme0_6 = ["-r", "-Prs0", "-corr_mod_abs", "-sa0"]
-scheme0_7 = ["-r", "-Prs0", "-corr_none", "-sa0"]
+scheme0_1 = ["-Prs0", "-corr_decay", "-sa0"]
+scheme0_2 = ["-Prs0", "-corr_modul", "-sa0"]
+scheme0_3 = ["-Prs0", "-corr_absorbp", "-sa0"]
+scheme0_4 = ["-Prs0", "-corr_dec_mod", "-sa0"]
+scheme0_5 = ["-Prs0", "-corr_dec_abs", "-sa0"]
+scheme0_6 = ["-Prs0", "-corr_mod_abs", "-sa0"]
+scheme0_7 = ["-Prs0", "-corr_none", "-sa0"]
 
-scheme1_1 = ["-r", "-Prs0", "-corr_decay", "-sa1"]
-scheme1_2 = ["-r", "-Prs0", "-corr_modul", "-sa1"]
-scheme1_3 = ["-r", "-Prs0", "-corr_absorbp", "-sa1"]
-scheme1_4 = ["-r", "-Prs0", "-corr_dec_mod", "-sa1"]
-scheme1_5 = ["-r", "-Prs0", "-corr_dec_abs", "-sa1"]
-scheme1_6 = ["-r", "-Prs0", "-corr_mod_abs", "-sa1"]
-scheme1_7 = ["-r", "-Prs0", "-corr_none", "-sa1"]
+scheme1_1 = ["-Prs0", "-corr_decay", "-sa1"]
+scheme1_2 = ["-Prs0", "-corr_modul", "-sa1"]
+scheme1_3 = ["-Prs0", "-corr_absorbp", "-sa1"]
+scheme1_4 = ["-Prs0", "-corr_dec_mod", "-sa1"]
+scheme1_5 = ["-Prs0", "-corr_dec_abs", "-sa1"]
+scheme1_6 = ["-Prs0", "-corr_mod_abs", "-sa1"]
+scheme1_7 = ["-Prs0", "-corr_none", "-sa1"]
 
-scheme2_1 = ["-r", "-Prs0", "-corr_decay", "-sa2"]
-scheme2_2 = ["-r", "-Prs0", "-corr_modul", "-sa2"]
-scheme2_3 = ["-r", "-Prs0", "-corr_absorbp", "-sa2"]
-scheme2_4 = ["-r", "-Prs0", "-corr_dec_mod", "-sa2"]
-scheme2_5 = ["-r", "-Prs0", "-corr_dec_abs", "-sa2"]
-scheme2_6 = ["-r", "-Prs0", "-corr_mod_abs", "-sa2"]
-scheme2_7 = ["-r", "-Prs0", "-corr_none", "-sa2"] 
+scheme2_1 = ["-Prs0", "-corr_decay", "-sa2"]
+scheme2_2 = ["-Prs0", "-corr_modul", "-sa2"]
+scheme2_3 = ["-Prs0", "-corr_absorbp", "-sa2"]
+scheme2_4 = ["-Prs0", "-corr_dec_mod", "-sa2"]
+scheme2_5 = ["-Prs0", "-corr_dec_abs", "-sa2"]
+scheme2_6 = ["-Prs0", "-corr_mod_abs", "-sa2"]
+scheme2_7 = ["-Prs0", "-corr_none", "-sa2"] 
  
 scheme0_a = ["-Prs1", "-corr", "-sa0"]
 scheme1_a = ["-Prs1", "-corr", "-sa1"] 
 scheme2_a = ["-Prs1", "-corr", "-sa2"] 
  
  
-scheme0_1_a = ["-r", "-Prs1", "-corr_decay", "-sa0"]
-scheme0_2_a = ["-r", "-Prs1", "-corr_modul", "-sa0"]
-scheme0_3_a = ["-r", "-Prs1", "-corr_absorbp", "-sa0"]
-scheme0_4_a = ["-r", "-Prs1", "-corr_dec_mod", "-sa0"]
-scheme0_5_a = ["-r", "-Prs1", "-corr_dec_abs", "-sa0"]
-scheme0_6_a = ["-r", "-Prs1", "-corr_mod_abs", "-sa0"]
-scheme0_7_a = ["-r", "-Prs1", "-corr_none", "-sa0"]
+scheme0_1_a = ["-Prs1", "-corr_decay", "-sa0"]
+scheme0_2_a = ["-Prs1", "-corr_modul", "-sa0"]
+scheme0_3_a = ["-Prs1", "-corr_absorbp", "-sa0"]
+scheme0_4_a = ["-Prs1", "-corr_dec_mod", "-sa0"]
+scheme0_5_a = ["-Prs1", "-corr_dec_abs", "-sa0"]
+scheme0_6_a = ["-Prs1", "-corr_mod_abs", "-sa0"]
+scheme0_7_a = ["-Prs1", "-corr_none", "-sa0"]
 
-scheme1_1_a = ["-r", "-Prs1", "-corr_decay", "-sa1"]
-scheme1_2_a = ["-r", "-Prs1", "-corr_modul", "-sa1"]
-scheme1_3_a = ["-r", "-Prs1", "-corr_absorbp", "-sa1"]
-scheme1_4_a = ["-r", "-Prs1", "-corr_dec_mod", "-sa1"]
-scheme1_5_a = ["-r", "-Prs1", "-corr_dec_abs", "-sa1"]
-scheme1_6_a = ["-r", "-Prs1", "-corr_mod_abs", "-sa1"]
-scheme1_7_a = ["-r", "-Prs1", "-corr_none", "-sa1"]
+scheme1_1_a = ["-Prs1", "-corr_decay", "-sa1"]
+scheme1_2_a = ["-Prs1", "-corr_modul", "-sa1"]
+scheme1_3_a = ["-Prs1", "-corr_absorbp", "-sa1"]
+scheme1_4_a = ["-Prs1", "-corr_dec_mod", "-sa1"]
+scheme1_5_a = ["-Prs1", "-corr_dec_abs", "-sa1"]
+scheme1_6_a = ["-Prs1", "-corr_mod_abs", "-sa1"]
+scheme1_7_a = ["-Prs1", "-corr_none", "-sa1"]
 
-scheme2_1_a = ["-r", "-Prs1", "-corr_decay", "-sa2"]
-scheme2_2_a = ["-r", "-Prs1", "-corr_modul", "-sa2"]
-scheme2_3_a = ["-r", "-Prs1", "-corr_absorbp", "-sa2"]
-scheme2_4_a = ["-r", "-Prs1", "-corr_dec_mod", "-sa2"]
-scheme2_5_a = ["-r", "-Prs1", "-corr_dec_abs", "-sa2"]
-scheme2_6_a = ["-r", "-Prs1", "-corr_mod_abs", "-sa2"]
-scheme2_7_a = ["-r", "-Prs1", "-corr_none", "-sa2"]
+scheme2_1_a = ["-Prs1", "-corr_decay", "-sa2"]
+scheme2_2_a = ["-Prs1", "-corr_modul", "-sa2"]
+scheme2_3_a = ["-Prs1", "-corr_absorbp", "-sa2"]
+scheme2_4_a = ["-Prs1", "-corr_dec_mod", "-sa2"]
+scheme2_5_a = ["-Prs1", "-corr_dec_abs", "-sa2"]
+scheme2_6_a = ["-Prs1", "-corr_mod_abs", "-sa2"]
+scheme2_7_a = ["-Prs1", "-corr_none", "-sa2"]
 
 
 listOfexperiment1 = [scheme0, scheme1, scheme2]
@@ -455,6 +461,10 @@ elif listofOptions[1] == 'dm' or 'md':
    corr = 'mod_dec'
 else :
    corr = 'abs_mod'
+if listofOptions[2] == "-r":
+    testRes = True
+else :
+    testRes = False
 
 if Prs == 'Prs0' and corr == 'all':
     listOfexperiment = listOfexperiment1
@@ -490,7 +500,11 @@ elif Prs == 'Prs1' and corr == 'mod_dec':
 elif Prs == 'Prs1' and corr == 'abs_mod':
     listOfexperiment = listOfexperiment8_a     
 
-        
+if testRes :
+    for scheme in listOfexperiment:
+        scheme.append("-r")
+else :
+ pass        
 
 
 listOfFile = ["X-CORRECTIONS.cbf", "Y-CORRECTIONS.cbf", "GAIN.cbf", "BLANK.cbf", 

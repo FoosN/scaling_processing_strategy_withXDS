@@ -84,7 +84,7 @@ def settings_XDS_resolution(original_dict_params, settings):  # settings must be
   ### JOB setting
     original_dict_params["job"] = " JOB= DEFPIX INTEGRATE CORRECT \n"
   ### resolution max setting
-    if "-r" or "all" in settings:   
+    if "-r" in settings:   
         resolution = str(original_dict_params["INCLUDE_RESOLUTION"])
         resolution_M = resolution.split()[-2]
         resolution_m = float(resolution.split()[-1])
@@ -94,18 +94,27 @@ def settings_XDS_resolution(original_dict_params, settings):  # settings must be
         while t < 4 :
             resolution2test.append(round(resolution_m + t*0.35, 2))
             original_dict_params["res"+str(t)] = " INCLUDE_RESOLUTION_RANGE= "+ resolution_M +" "+ str(resolution2test[t-1]) + "\n"
-            folderNameExtension = resolution2test
+#            folderNameExtension = resolution2test
             t += 1
         original_dict_params["res"+str(t)] = " INCLUDE_RESOLUTION_RANGE= "+ resolution_M +" "+ str(resolution2test[t-1]) + "\n"
-        
+    else :
+        t = 1
+        resolution = str(original_dict_params["INCLUDE_RESOLUTION"])
+        resolution_M = resolution.split()[-2]
+        resolution_m = float(resolution.split()[-1]) 
+        resolution2test = []
+        resolution2test.append(round(resolution_m, 2))
+        original_dict_params["res"+str(t)] = " INCLUDE_RESOLUTION_RANGE= "+ resolution_M +" "+ str(resolution2test[t-1]) + "\n"
 # ici ce bloc n'est pas teste, ce qui est au dessus est OK
     #elif "-r" or "all" in settings:
         #define the test resolution range pour test :  
-        reso_cut = resolution2test[-1]
-        original_dict_params["TEST_RESOLUTION_RANGE"] = "TEST_RESOLUTION_RANGE= 50 "+ str(reso_cut) +"\n"
-        folderNameExtension = [reso_cut]
-    else :
-        print "coucou"
+#        reso_cut = resolution2test[-1]
+#        original_dict_params["TEST_RESOLUTION_RANGE"] = "TEST_RESOLUTION_RANGE= 50 "+ str(reso_cut) +"\n"
+#        folderNameExtension = [reso_cut]
+#        print folderNameExtension 
+#        print "de xds_resolution"
+#    else :
+#        print "coucou"
     #    print "Problem in resolution settings"
     #return  folderNameExtension
   
@@ -113,7 +122,7 @@ def catch_XDS_resolution(original_dict_params, settings):
 #"""settings must be a list of patrameters wich may influence\
 #        scaling or integration that we want to explore"""
   ### resolution max setting
-    if "-r" or "all" in settings:   
+    if "-r" in settings:   
         resolution = str(original_dict_params["INCLUDE_RESOLUTION"])
         resolution_m = float(resolution.split()[-1])
         resolution2test = []
@@ -123,16 +132,25 @@ def catch_XDS_resolution(original_dict_params, settings):
             resolution2test.append(round(resolution_m + t*0.35, 2))
             folderNameExtension = resolution2test
             t += 1
-        
-# not tested
-    elif "-r" or "all" in settings:
-        #define the test resolution range pour test :  
-        reso_cut = resolution2test[-1]
-        folderNameExtension = [reso_cut]
     else :
-        print "Problem in resolution settings"
-    return  folderNameExtension
-    
+        resolution = str(original_dict_params["INCLUDE_RESOLUTION"])
+        resolution_m = float(resolution.split()[-1])
+        resolution2test = []
+        resolution2test.append(round(resolution_m, 2))        
+        folderNameExtension = resolution2test
+    return folderNameExtension
+# not tested
+   # elif "-r" or "all" in settings:
+        #define the test resolution range pour test :  
+   #     reso_cut = resolution2test[-1]
+   #     folderNameExtension = [reso_cut]
+   #     print folderNameExtension
+   #     print "de catch"
+   # else :
+   #     print "Problem in resolution settings"
+   # return  folderNameExtension
+   # print folderNameExtension
+   # print "de catch"
     
 def settings_XDS_strictAbsCorr(original_dict_params, settings):
   ### strict abs correction : 
@@ -276,16 +294,16 @@ def StartingOpen():
             exit(0)    
             
 def givenUserOption():
-    option1 = raw_input ('Please chose if you want use the parameter \
-    which concern the scaling parameters per frames [N/y] : ' )
+    option1 = raw_input ('Please chose if you want use the parameter\
+ which concern the scaling parameters per frames [N/y] : ' )
     if option1 == '' :
         option1 = 'N'
     else:
         option1 = option1
     
-    option2 = raw_input ('Please chose if you want use the parameter \
-    which modify the CORRECTION options "m" for MODULATION, "d" for DECAY, "a" for \
-    ABSORP, "n" for NONE default is ALL (example : md) :')
+    option2 = raw_input ('Please chose if you want use the parameter\
+ which modify the CORRECTION options "m" for MODULATION, "d" for DECAY, "a" for\
+ ABSORP, "n" for NONE default is ALL (example : md) :')
     if option2 =='':
         option2 = 'all'
     else:
@@ -315,7 +333,7 @@ def FillinFolder(create, resultFile, listOfexperiment, listOfFile, xdsinp):
     if create:
         base2editeJob = information_summary(xdsinp, resultFile)
         for i in listOfexperiment:
-            folderNameExtension = catch_XDS_resolution(base2editeJob, i)         
+            folderNameExtension = catch_XDS_resolution(base2editeJob, i)
             for nbr in folderNameExtension:
                 resultFile2 = resultFile +"/"+"scheme"+str(listOfexperiment.index(i)) + ".res" + str(nbr)
                 try:

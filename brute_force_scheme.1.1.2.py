@@ -419,7 +419,6 @@ def FillinFolder(create, resultFile, listOfexperiment, listOfFile, xdsinp, optio
             base2editeJob = information_summary(xdsinp, resultFile)
             for i in listOfexperiment:
                 if "-sa0" in i:
-                    print "c'est i : ", i
                     folderNameExtension = catch_XDS_resolution(base2editeJob, i)
                     for nbr in folderNameExtension:
                         resultFile2 = resultFile +"/"+"scheme"+str(listOfexperiment.index(i)) + ".res" + str(nbr)
@@ -605,26 +604,32 @@ else :
     listOfFile = ["INTEGRATE.HKL", "X-CORRECTIONS.cbf", "Y-CORRECTIONS.cbf", "GAIN.cbf", "BLANK.cbf", 
               "BKGINIT.cbf", "img"]         
 
-print listofOptions[-1]
-print listOfexperiment
+#print listofOptions
+#print listOfexperiment
 if "S0" in listofOptions:
     resultFile = makeResultFile(create)
     base2editeJob = FillinFolder(create, resultFile, listOfexperiment, listOfFile, xdsinp, listofOptions[-1])
     newDictsXds = prepare4writing_xdsINP(xdsinp, base2editeJob, listOfexperiment)
     listofKey = sorted(newDictsXds)
     listofFolder = sorted(glob.glob(resultFile+"/"+"scheme*"))
-    print listofFolder
+    #print listofFolder
     shortlist = []
     for key in listofKey:
         if ".0." in key:
             shortlist.append(key)
-    print shortlist
+    #print shortlist
     for key in shortlist:
         key = listofKey.index(key)
         file2write = newDictsXds[listofKey[key]]
         #print file2write
         pathXds = str(listofFolder[key])+"/"
         writing_list_in_file(pathXds, file2write)    
+ ######### Automatic xds run
+    if "-r" not in listofOptions:
+        os.chdir(pathXds)
+        #print os.listdir(".")
+        os.system("xds_par")
+
 else:
     resultFile = makeResultFile(create)
     base2editeJob = FillinFolder(create, resultFile, listOfexperiment, listOfFile, xdsinp, listofOptions[-1])
@@ -632,12 +637,18 @@ else:
     listofKey = sorted(newDictsXds)
     listofFolder = sorted(glob.glob(resultFile+"/"+"scheme*"))    
     for key in listofKey:
-        print listofKey
-        print key
+        #print listofKey
+        #print key
         key = listofKey.index(key)
         file2write = newDictsXds[listofKey[key]]
         #print file2write    
         pathXds = str(listofFolder[key])+"/"
         writing_list_in_file(pathXds, file2write)
          
-    
+ ######### Automatic xds run
+         
+#if "SO" in listofOptions :
+#    print "toto"
+#    myDir = os.listdir(pathXds)
+#    os.chdir(myDir)
+#    print os.listdir()

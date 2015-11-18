@@ -103,14 +103,20 @@ def dictio_value_edition(dictio, key_entry, newvalue):
 """ definition of mains processing schems"""
 # Control of input file and making folder for each strategy of processing
 # with the required file for xds.
+def settings_XDS_job_base(original_dict_params, settings):
+    original_dict_params["job"] = " JOB= CORRECT \n"
+
+def settings_XDS_job_Prs(original_dict_params, settings):
+    if "Prs1" or "PrsP" in settings :
+        original_dict_params["job"] = " JOB= DEFPIX INTEGRATE CORRECT \n"
+
 def settings_XDS_resolution(original_dict_params, settings):  # settings must be a list of stuff that we want explore
     #original_file is the XDS.INP wich has to be modified, 
 # setting is a list. This list contains different parameters for xds executions.
 # generic setting for all schems
-  ### JOB setting
-    original_dict_params["job"] = " JOB= DEFPIX INTEGRATE CORRECT \n"
   ### resolution max setting
-    if "-r" in settings:   
+    if "-r" in settings:
+        original_dict_params["job"] = " JOB= DEFPIX INTEGRATE CORRECT \n"
         resolution = str(original_dict_params["INCLUDE_RESOLUTION"])
         resolution_M = resolution.split()[-2]
         resolution_m = float(resolution.split()[-1])
@@ -181,11 +187,11 @@ def catch_XDS_resolution(original_dict_params, settings):
 def settings_XDS_strictAbsCorr(original_dict_params, settings):
   ### strict abs correction : 
     if "-sa0" in settings:
-        dictio_value_edition(original_dict_params, "STRICT_ABSORPTION","STRICT_ABSORPTION_CORRECTION= TRUE \n" )
+        dictio_value_edition(original_dict_params, "STRICT_ABSORPTION"," STRICT_ABSORPTION_CORRECTION= TRUE \n" )
     elif "-sa2" in settings:
-        dictio_value_edition(original_dict_params, "STRICT_ABSORPTION","STRICT_ABSORPTION_CORRECTION= TRUE \n")
+        dictio_value_edition(original_dict_params, "STRICT_ABSORPTION"," STRICT_ABSORPTION_CORRECTION= TRUE \n")
     elif "-sa1" in settings:
-        dictio_value_edition(original_dict_params, "STRICT_ABSORPTION","STRICT_ABSORPTION_CORRECTION= FALSE \n")
+        dictio_value_edition(original_dict_params, "STRICT_ABSORPTION"," STRICT_ABSORPTION_CORRECTION= FALSE \n")
        
 
    ### pre-scaling management :
@@ -207,7 +213,7 @@ def settings_XDS_prescal_factor(original_dict, settings):
     elif "-Prs0" in settings :
         original_dict["pscale"] = ""
     # in this case : the xds automatic determination will be use.
-        pass
+       # pass
 
 
 def settings_XDS_correction(original_dict, settings):
@@ -261,6 +267,10 @@ def prepare4writing_xdsINP(xdsinp, dictOfKword, listOfexperiment):
         dictOfKword1 = copy.deepcopy(dictOfKword)
         #print dictOfKword1
         #print listOfexperiment[dicoNbr]
+        if listOfexperiment[0][0] == "-Prs1":
+             settings_XDS_job_Prs(dictOfKword1, listOfexperiment[dicoNbr])
+        else :
+            settings_XDS_job_base(dictOfKword1, listOfexperiment[dicoNbr])
         settings_XDS_strictAbsCorr(dictOfKword1, listOfexperiment[dicoNbr])
         settings_XDS_friedel(dictOfKword1, listOfexperiment[dicoNbr])
         settings_XDS_correction(dictOfKword1, listOfexperiment[dicoNbr])
@@ -301,47 +311,70 @@ def prepare4writing_xdsINP(xdsinp, dictOfKword, listOfexperiment):
             
             
 def StartingOpen():              
-    global arg
+    global arg2    
+    if len(sys.argv[1:]) > 1:
+        if sys.argv.count("-S0"):
+            sys.argv.remove("-S0")
+            optionX = "S0"
+        else :
+            optionX = "all"
+        if sys.argv.count("-r"):
+            sys.argv.remove("-r")
+            option3 = "-r"
+        else :
+            option3 = "notest"
+        if sys.argv.count("-Prs"):
+            sys.argv.remove("-Prs")
+            option1 = "y"
+        else : 
+            option1 = "N"
+        option2 = "all"
+        listofOptions = [option1, option2, option3, optionX]
+        #return listofOptions
+    else :
+        listofOptions = False
     for arg in sys.argv[1:]:
+        arg2 = os.path.abspath(arg)
         try:
-            if os.path.isfile(arg):
-                with open(arg) as input_file :
-                    global xdsinp                    
+            if os.path.isfile(arg2):
+                with open(arg2) as input_file :                   
                     xdsinp = input_file.readlines()
                     for lines in xdsinp :
                         if re.findall(r"JOB=", lines):
-                            print "XDS.INP is take in count"
+                            print "file XDS.INP OK"
                             create = True
-                    return create
-                    return xdsinp
-                    
+            return create , xdsinp, listofOptions
+                    #return xdsinplistofOptions
         except:
             print ("it's not XDS.INP or it's corrupted")
             exit(0)    
             
 def givenUserOption():
-    option1 = raw_input ('Please chose if you want use the parameter\
- which concern the scaling parameters per frames [N/y] : ' )
+    option1 = raw_input ('Please choose if you impose parameters of pre-scaling per\
+ per frames [N/y] : ' )
     if option1 == '' :
         option1 = 'N'
+    elif option1 =='y':
+        option1 = 'y'
     else:
-        option1 = option1
+        exit(0)
     
-    option2 = raw_input ('Please chose if you want use the parameter\
- which modify the CORRECTION options "m" for MODULATION, "d" for DECAY, "a" for\
+    option2 = raw_input ('Please choose if you want to modify the corrections parameters\
+ concern CORRECTION options : "m" for MODULATION, "d" for DECAY, "a" for\
  ABSORP, "n" for NONE default is ALL (example : md) :')
     if option2 =='':
         option2 = 'all'
     else:
         option2 = option2
     
-    option3 = raw_input ('Please chose if you want to try different resolution\
- cut-off (N/y): ')
+    option3 = raw_input ('Please choose if you want to change the resolution cut-off\
+    (N/y): ')
     if option3 =='':
         option3 = 'no test'
     else:
         option3 = "-r"
-    listofOptions = [option1, option2, option3] 
+    optionX = "all"    
+    listofOptions = [option1, option2, option3, optionX] 
     return listofOptions   
     
 def makeResultFile(create):
@@ -361,26 +394,48 @@ def makeResultFile(create):
             
  
     
-def FillinFolder(create, resultFile, listOfexperiment, listOfFile, xdsinp):    
+def FillinFolder(create, resultFile, listOfexperiment, listOfFile, xdsinp, optionX):    
     if create:
-        base2editeJob = information_summary(xdsinp, resultFile)
-        for i in listOfexperiment:
-            folderNameExtension = catch_XDS_resolution(base2editeJob, i)
-            for nbr in folderNameExtension:
-                resultFile2 = resultFile +"/"+"scheme"+str(listOfexperiment.index(i)) + ".res" + str(nbr)
-                try:
-                    os.makedirs(resultFile2, 0777)
-                except OSError:
-                    print 'WARNING : Problem to create Directory for results'
+        if optionX == "all":
+            base2editeJob = information_summary(xdsinp, resultFile)
+            for i in listOfexperiment:
+                folderNameExtension = catch_XDS_resolution(base2editeJob, i)
+                for nbr in folderNameExtension:
+                    resultFile2 = resultFile +"/"+"scheme"+str(listOfexperiment.index(i)) + ".res" + str(nbr)
+                    try:
+                        os.makedirs(resultFile2, 0777)
+                    except OSError:
+                        print 'WARNING : Problem to create Directory for results'
                     #if not "File exists":
                     #  exit(0)
-                for kword in listOfFile:        
-                    srcFile = arg[:-7] + kword
-                    dest = resultFile2 + "/" + kword
+                    for kword in listOfFile:        
+                        srcFile = arg2[:-7] + kword
+                        dest = resultFile2 + "/" + kword
+                        symlink_creation(srcFile, dest)
+                    srcFile = arg2[:-7] + "GXPARM.XDS"
+                    dest = resultFile2 + "/" + "XPARM.XDS"
                     symlink_creation(srcFile, dest)
-                srcFile = arg[:-7] + "GXPARM.XDS"
-                dest = resultFile2 + "/" + "XPARM.XDS"
-                symlink_creation(srcFile, dest)
+        elif optionX == "S0":
+            base2editeJob = information_summary(xdsinp, resultFile)
+            for i in listOfexperiment:
+                if "-sa0" in i:
+                    print "c'est i : ", i
+                    folderNameExtension = catch_XDS_resolution(base2editeJob, i)
+                    for nbr in folderNameExtension:
+                        resultFile2 = resultFile +"/"+"scheme"+str(listOfexperiment.index(i)) + ".res" + str(nbr)
+                        try:
+                            os.makedirs(resultFile2, 0777)
+                        except OSError:
+                            print 'WARNING : Problem to create Directory for results'
+                    #if not "File exists":
+                    #  exit(0)
+                        for kword in listOfFile:        
+                            srcFile = arg2[:-7] + kword
+                            dest = resultFile2 + "/" + kword
+                            symlink_creation(srcFile, dest)
+                        srcFile = arg2[:-7] + "GXPARM.XDS"
+                        dest = resultFile2 + "/" + "XPARM.XDS"
+                        symlink_creation(srcFile, dest)
     return base2editeJob
 
 
@@ -466,35 +521,42 @@ listOfexperiment6_a = [scheme0_5_a, scheme1_5_a, scheme2_5_a]
 listOfexperiment7_a = [scheme0_4_a, scheme1_4_a, scheme2_4_a]
 listOfexperiment8_a = [scheme0_6_a, scheme1_6_a, scheme2_6_a]
 
-listofOptions = givenUserOption()
+create, xdsinp, listofOptions = StartingOpen()
+if listofOptions :
+    pass
+else :
+    listofOptions = givenUserOption()
+#print listofOptions
+
 if listofOptions[0] == 'y':
     Prs = 'Prs1'
 else :
     Prs = 'Prs0'
 if listofOptions[1] == 'm':
-   corr = 'modulation'
+    corr = 'modulation'
 elif listofOptions[1] == 'd':
-   corr = 'decay'
+    corr = 'decay'
 elif listofOptions[1] == 'a':
-   corr = 'absorp'
+    corr = 'absorp'
 elif listofOptions[1] == 'n':
-   corr = 'none'     
+    corr = 'none'     
 elif listofOptions[1] == 'all':
-   corr = 'all'
+    corr = 'all'
 elif listofOptions[1] == 'da' or 'ad':
-   corr = 'abs_dec'
+    corr = 'abs_dec'
 elif listofOptions[1] == 'dm' or 'md':
-   corr = 'mod_dec'
+    corr = 'mod_dec'
 else :
-   corr = 'abs_mod'
+    corr = 'abs_mod'
 if listofOptions[2] == "-r":
     testRes = True
 else :
     testRes = False
 
+
 if Prs == 'Prs0' and corr == 'all':
     listOfexperiment = listOfexperiment1
-elif Prs == 'Prs0' and corr == 'none':
+elif Prs == 'Prs0' and corr == 'none':  
     listOfexperiment = listOfexperiment2
 elif Prs == 'Prs0' and corr == 'modulation':
     listOfexperiment = listOfexperiment3
@@ -508,7 +570,7 @@ elif Prs == 'Prs0' and corr == 'mod_dec':
     listOfexperiment = listOfexperiment7
 elif Prs == 'Prs0' and corr == 'abs_mod':
     listOfexperiment = listOfexperiment8   
-    
+
 elif Prs == 'Prs1' and corr == 'all':
     listOfexperiment = listOfexperiment1_a
 elif Prs == 'Prs1' and corr == 'none':
@@ -525,6 +587,10 @@ elif Prs == 'Prs1' and corr == 'mod_dec':
     listOfexperiment = listOfexperiment7_a
 elif Prs == 'Prs1' and corr == 'abs_mod':
     listOfexperiment = listOfexperiment8_a     
+   
+#if "S0" in listofOptions:
+#    listOfexperiment = listOfexperiment[0]
+
 
 if testRes :
     for scheme in listOfexperiment:
@@ -532,32 +598,46 @@ if testRes :
 else :
  pass        
 
+if listofOptions[2] == "-r" or listofOptions[0] == "y":
+    listOfFile = ["X-CORRECTIONS.cbf", "Y-CORRECTIONS.cbf", "GAIN.cbf", "BLANK.cbf", 
+              "BKGINIT.cbf", "img"]
+else :
+    listOfFile = ["INTEGRATE.HKL", "X-CORRECTIONS.cbf", "Y-CORRECTIONS.cbf", "GAIN.cbf", "BLANK.cbf", 
+              "BKGINIT.cbf", "img"]         
 
-listOfFile = ["X-CORRECTIONS.cbf", "Y-CORRECTIONS.cbf", "GAIN.cbf", "BLANK.cbf", 
-              "BKGINIT.cbf", "img"]             
-
-
-create = StartingOpen()
-resultFile = makeResultFile(create)
-#print resultFile
-#print listOfexperiment
-#print listOfFile
-#print xdsinp
-base2editeJob = FillinFolder(create, resultFile, listOfexperiment, listOfFile, xdsinp)
-#print listOfexperiment
-#print base2editeJob
-newDictsXds = prepare4writing_xdsINP(xdsinp, base2editeJob, listOfexperiment)
-#print newDictsXds
-listofKey = sorted(newDictsXds)
-listofFolder = sorted(glob.glob(resultFile+"/"+"scheme*"))
-
-for key in listofKey:
-#    print listofKey
-#    print key
-    key = listofKey.index(key)
-    file2write = newDictsXds[listofKey[key]]
-    #print file2write    
-    pathXds = str(listofFolder[key])+"/"
-    writing_list_in_file(pathXds, file2write)
+print listofOptions[-1]
+print listOfexperiment
+if "S0" in listofOptions:
+    resultFile = makeResultFile(create)
+    base2editeJob = FillinFolder(create, resultFile, listOfexperiment, listOfFile, xdsinp, listofOptions[-1])
+    newDictsXds = prepare4writing_xdsINP(xdsinp, base2editeJob, listOfexperiment)
+    listofKey = sorted(newDictsXds)
+    listofFolder = sorted(glob.glob(resultFile+"/"+"scheme*"))
+    print listofFolder
+    shortlist = []
+    for key in listofKey:
+        if ".0." in key:
+            shortlist.append(key)
+    print shortlist
+    for key in shortlist:
+        key = listofKey.index(key)
+        file2write = newDictsXds[listofKey[key]]
+        #print file2write
+        pathXds = str(listofFolder[key])+"/"
+        writing_list_in_file(pathXds, file2write)    
+else:
+    resultFile = makeResultFile(create)
+    base2editeJob = FillinFolder(create, resultFile, listOfexperiment, listOfFile, xdsinp, listofOptions[-1])
+    newDictsXds = prepare4writing_xdsINP(xdsinp, base2editeJob, listOfexperiment)
+    listofKey = sorted(newDictsXds)
+    listofFolder = sorted(glob.glob(resultFile+"/"+"scheme*"))    
+    for key in listofKey:
+        print listofKey
+        print key
+        key = listofKey.index(key)
+        file2write = newDictsXds[listofKey[key]]
+        #print file2write    
+        pathXds = str(listofFolder[key])+"/"
+        writing_list_in_file(pathXds, file2write)
          
     

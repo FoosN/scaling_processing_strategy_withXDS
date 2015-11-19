@@ -44,11 +44,12 @@ def StartingOpen():
     """
 # arg is global, because it's re-used during code execution as parameters to
 # find the relativ-path.           
-    global arg
+    global arg2
     for arg in sys.argv[1:]:
+        arg2 = os.path.abspath(arg)
         try:
-            if os.path.isfile(arg):
-                with open(arg) as input_file :
+            if os.path.isfile(arg2):
+                with open(arg2) as input_file :
                     global xdsinp                    
                     xdsinp = input_file.readlines()
                     for lines in xdsinp :
@@ -58,7 +59,7 @@ def StartingOpen():
                         print "XSCALE.INP is take in count"
                         return create
                         return xdsinp
-                        return arg
+                        return arg2
                     
         except:
             print ("it's not XSCALE.INP or it's corrupted")
@@ -376,7 +377,7 @@ for i in listOfFile:
     # initially typed by the user. It's concatenation of the strating parts of
     # the original path typed and the current path to the symlink newly created
     # just before.
-    link = symlink_creation(arg[:-10]+i[15:-1], "./"+str(resultFile)+"/"+str(listOfFile.index(i))+".HKL")
+    link = symlink_creation(arg2[:-10]+i[15:-1], "./"+str(resultFile)+"/"+str(listOfFile.index(i))+".HKL")
 listofFolder = []
 for scheme in listOfexperiment:
     # create differents folders for each scheme used
